@@ -87,7 +87,8 @@ class Communicate(object):
         errors = self._getOutput(self._errQueue)
         return errors
     
-    def communicate(self,command,waitTimeForTheCommandToGiveOutput=0.1):
+    def communicate(self,command,waitTimeForTheCommandToGiveOutput=0.2):
+        print 'Executing:', command
         self.send(command)
         time.sleep(waitTimeForTheCommandToGiveOutput)
         return [self.receiveOutput(),self.receiveErrors()]

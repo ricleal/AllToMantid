@@ -8,9 +8,11 @@ import nxs
 
 class Lamp(object):
     '''
-    Lamp object
+    This class will keep data from a object imported from lamp.
+    To date only data import from a nexus file is supported. See below: importNexus    
     '''
     
+    # Parameters accessible 
     parameters = {}
     data = None
     xAxis = None
@@ -85,7 +87,15 @@ class Lamp(object):
         import matplotlib.pyplot as plt
         plt.imshow(a)
         plt.show()
-
+    
+    def _getParameter(self, desc):
+        for p in self.parameters.keys():
+            if desc.lower() in p.lower():
+                return self.parameters[p]
+    def wavelength(self):
+        w = self._getParameter('Wavelength (angstroms)')
+        if w is not None:
+            return float(w)
 
 if __name__ == '__main__':
     l = Lamp()
@@ -96,7 +106,7 @@ if __name__ == '__main__':
     pprint.pprint(l.xAxis)
     pprint.pprint(l.yAxis)
     print l.data.shape
-    l.showSnapShot('/tmp/ricardo_LAMP.hdf')
-
+    #l.showSnapShot('/tmp/ricardo_LAMP.hdf')
+    print l.wavelength()
     
         

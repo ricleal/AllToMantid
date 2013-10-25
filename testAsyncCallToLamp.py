@@ -6,7 +6,13 @@ Created on Oct 17, 2013
 
 import asynccall.communicate as scall
 
+
 def testLamp():
+    '''
+    Uses asynccall.communicate to call lamp executable.
+    Launch a few Lamp commands and saves a nexus file.
+    '''
+    
     executable = '/net/serhom/home/cs/richard/Free_Lamp81/START_lamp -nws'
     prompt = "DataPath is:"
     exitCommand = "exit"
@@ -19,6 +25,7 @@ def testLamp():
     print lamp.communicate("rdset, inst='d22'")
     print lamp.communicate("rdset, cycle='133', proposal='internalUse'")
     print lamp.communicate("w2 = rdrun(84452)")
+    # creates hdf file: /tmp/ricardo_LAMP.hdf
     print lamp.communicate("write_lamp, '/tmp/ricardo', w=2, format='HDF'")
     print lamp.communicate("see, w=2, /surface, /beside")
     print lamp.communicate("spawn, 'mv lamp.png /tmp/ricardo.png'")

@@ -13,7 +13,7 @@ import os
 
 class Communicate(object):
     '''
-    Class to communicate asynchronously with a Linux process
+    Class to communicate asynchronously with a Linux process.
     '''
 
 

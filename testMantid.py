@@ -4,11 +4,10 @@ Created on Oct 17, 2013
 @author: leal
 '''
 
-import mantidcall.communicate as mcall
+import mantidinterface.workspace as mtdi
 import numpy as np
 
-import string
-import random
+
 
 
 """
@@ -18,19 +17,23 @@ run /home/leal/git/AllToMantid/testMantid.py
 
 
 """
-def generateRandomString(prefix='ws', length=6):
-    return ''.join(random.sample(string.letters*5,length))
+
 
 def testMantid():
-    m =  mcall.Communicate()
+    '''
+    
+    '''
+    m =  mtdi.Workspace()
     
     # (n_rows, n_collumns)
     data = np.random.random((10,10))*100
     xAxis = np.arange(1,11)
     
-    outputWorkspaceName = generateRandomString()
-    m.createWorkspaceHistogram(data, xAxis,outputWorkspaceName)
     
+    m.createFromData(data, xAxis)
+    m.setProperties( {"p1":"1","p2":"2", "p3": "string 11212"} )
+    
+    m.setAndCorrectProperties({"p1":"1","p2":"2", "p3": "string 11212",'15) Wavelength (angstroms)': '5.23'})
     
 
 if __name__ == '__main__':

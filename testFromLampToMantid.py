@@ -5,7 +5,7 @@ Created on Oct 18, 2013
 '''
 
 import asynccall.communicate as scall
-import mantidcall.communicate as mcall
+import mantidinterface.workspace as mtdi
 
 import tempfile
 import lamp.lamp as lamp
@@ -17,7 +17,12 @@ In mantid ipython console type:
 run /home/leal/git/AllToMantid/testFromLampToMantid.py
 
 """
+
 def runCommandInLamp(tempFileNamePrefix):
+    """
+    Run a few commands in lamp and exports the WS in hdf
+    @param tempFileNamePrefix:
+    """
     executable = '/net/serhom/home/cs/richard/Free_Lamp81/START_lamp -nws'
     prompt = "DataPath is:"
     exitCommand = "exit"
@@ -36,15 +41,25 @@ def runCommandInLamp(tempFileNamePrefix):
     return tempFileNamePrefix + "_LAMP.hdf"
 
 def convertLampWorkspaceToNumpy(filename): 
+    """
+    Read the hdf file produced by Lamp, parse it and produces a Lamp Python object
+    @param filename:
+    """
     l = lamp.Lamp()
     l.importNexus(filename)
     return l
 
 def importWSInLampToMantid(lampws):
-    m =  mcall.Communicate()
+    """
+    Import the Lamp Python object into mantid
+    @param lampws:
+    """
+    m =  mtdi.Workspace()
     data = lampws.data
     xAxis = lampws.xAxis
-    m.createWorkspaceHistogram(data, xAxis,outputWorkspaceName='LampToMantid')
+    m.createFromData(data, xAxis)
+    m.setAndCorrectProperties(lampws.parameters)
+    
 
 if __name__ == '__main__':
     tempFileNamePrefix = tempfile.NamedTemporaryFile(delete=False)

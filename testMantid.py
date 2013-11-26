@@ -31,9 +31,8 @@ def testMantid():
     
     
     m.createFromData(data, xAxis)
-    m.setProperties( {"p1":"1","p2":"2", "p3": "string 11212"} )
-    
-    m.setAndCorrectProperties({"p1":"1","p2":"2", "p3": "string 11212",'15) Wavelength (angstroms)': '5.23'})
+    #m.setProperties( {"p1":"1","p2":"2", "p3": "string 11212"} )
+    m.setAndCorrectProperties({"p1":"1","p2":"2", "p3": "string 11212",'15) Wavelength (angstroms)': 5.23})
     
 
 if __name__ == '__main__':

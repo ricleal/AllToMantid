@@ -107,14 +107,20 @@ class Workspace(object):
             sys.exit(-1)
         r = self.thisWs.run()
         
+        
         import re
         wavelengthRE = re.compile(".+Wavelength.+angstroms.+")
         for key, value in propertyDic.iteritems():
-            if wavelengthRE.match(key) is not None:
-                r.addProperty("wavelength",value,True)
-                r.addProperty("Ei",self._calculateEnergy(float(value)),True)
-            else :
-                r.addProperty(key,value,True)
+            print key, ":", value
+            if key is not None and value is not None and len(key) > 0 and len(value) > 0 :
+                if wavelengthRE.match(key) is not None:
+                    r.addProperty("wavelength",float(value),True)
+                    r.addProperty("Ei",self._calculateEnergy(float(value)),True)
+                else :
+                    try: 
+                        r.addProperty(key,float(value),True)
+                    except:
+                        r.addProperty(key,value,True)
         
     
         

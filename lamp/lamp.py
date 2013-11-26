@@ -9,6 +9,7 @@ import nxs
 class Lamp(object):
     '''
     This class will keep data from a object imported from lamp.
+    I.e. This class holds a Lamp python object
     To date only data import from a nexus file is supported. See below: importNexus    
     '''
     

@@ -30,8 +30,7 @@ class Communicate(object):
         self._prompt = prompt
         self._exitCommand = exitCommand
         
-        self._subproc = subprocess.Popen(executable, stdin=subprocess.PIPE, stdout=subprocess.PIPE, 
-                             stderr=subprocess.PIPE, shell=True, universal_newlines=True)
+        self._launch()
         
         self._outQueue = Queue.Queue()
         self._errQueue = Queue.Queue()
@@ -40,14 +39,14 @@ class Communicate(object):
         self._startExecutable()
     
     def _startThreads(self):
-        outThread = threading.Thread(target=self._enqueueOutput, args=(self._subproc.stdout, self._outQueue))
-        errThread = threading.Thread(target=self._enqueueOutput, args=(self._subproc.stderr, self._errQueue))
+        self.outThread = threading.Thread(target=self._enqueueOutput, args=(self._subproc.stdout, self._outQueue))
+        self.errThread = threading.Thread(target=self._enqueueOutput, args=(self._subproc.stderr, self._errQueue))
         
-        outThread.daemon = True
-        errThread.daemon = True
+        self.outThread.daemon = True
+        self.errThread.daemon = True
         
-        outThread.start()
-        errThread.start()
+        self.outThread.start()
+        self.errThread.start()
     
     def _startExecutable(self):
         print self._executable, 'is starting...'
@@ -76,6 +75,7 @@ class Communicate(object):
             return outStr
     
     def send(self,command):
+        self._relaunchIfItIsNotRunning()
         self._subproc.stdin.write(command + os.linesep)        
         self._subproc.stdin.flush()        
     
@@ -98,7 +98,7 @@ class Communicate(object):
         Try to send the exit command to subprocess running.
         Kill it if it is still running
         """
-        if self._exitCommand is not None:
+        if self._isSubProcessRunning() and self._exitCommand is not None:
             self._subproc.stdin.write(self._exitCommand)
             self._subproc.stdin.write(os.linesep)
             self._subproc.stdin.flush()
@@ -108,6 +108,17 @@ class Communicate(object):
             self._subproc.kill()
         time.sleep(0.1)
         print 'Done!'
+    
+    def _launch(self):
+        self._subproc = subprocess.Popen(self._executable, stdin=subprocess.PIPE, stdout=subprocess.PIPE, 
+                             stderr=subprocess.PIPE, shell=True, universal_newlines=True)
+    def _relaunchIfItIsNotRunning(self):
+        if not self._isSubProcessRunning():
+            self._launch()
+            self._outQueue = Queue.Queue()
+            self._errQueue = Queue.Queue()   
+            self._startThreads()
+            self._startExecutable()
     
     def _isSubProcessRunning(self):
         """
@@ -122,5 +133,30 @@ class Communicate(object):
     def __del__(self):
         if self._isSubProcessRunning() :
             self.exit()    
+
+def test():
+    executable = '/net/serhom/home/cs/richard/Free_Lamp81/START_lamp -nws'
+    prompt = "loaded ..."
+    exitCommand = "exit"
+    
+    lamp = Communicate(executable, prompt, exitCommand)
+    #time.sleep(0.2)
+    output,errors = lamp.communicate('print, "Hello, Python"', waitTimeForTheCommandToGiveOutput=0.2)
+    print "Output: ", output
+    print "Errors: ", errors
+    
+    lamp.exit();
+    
+    output,errors = lamp.communicate('print, "Hello, Python"', waitTimeForTheCommandToGiveOutput=0.2)
+    print "Output: ", output
+    print "Errors: ", errors
+    
+
+if __name__ == '__main__':
+    test()
+    
+    
+     
+    
     
     
